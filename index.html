@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	
+	
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    
+    <!-- Google Fonts Dosis -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis">
+    
+    <!-- Google Fonts Open Sans -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+    
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    
+    
+    <!--  Core CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    
+     <!-- jQuery -->
+    <script src="js/libraries/jquery.js"></script>
+
+	 <!-- underscore -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/libraries/bootstrap.min.js"></script>
+    
+    <!-- Mustache -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.min.js"></script>
+    
+    
+     <script type="text/javascript">
+     	//treatment add onclick, #results append a treatment / change
+  		// should there be a limit on results?
+  		 $("document").ready(function() {
+			var template = $("#treatment-template").html(),
+				$target = $("#all-treatments"), // in html, where dynamic templates should be inserted
+				$btnAdd = $("#add-treatment"),
+				max = 10,
+				count = 1,
+				inputRow = [],
+				allCounts = [];
+				
+			
+            
+            
+           // $btnAdd.click(function(e){
+// 				  e.preventDefault();
+// 				  addRows();
+// 				  $(".angledown").on('click',function(){
+// 				   $(this).closest('.visible-part').next().toggleClass("hide");
+// 			 });
+// 		 	});
+		 	
+		 $('body').on('click','#add-treatment',function(e){
+				  e.preventDefault();
+				  addRows();
+		 });
+		 $('body').on('click','.angledown',function(){
+			   $(this).closest('.visible-part').next().toggleClass("hide",1000);
+		 });
+		 
+			
+
+		function addRows(){
+		  if(count <= max){
+			inputRow = {
+			  count : count
+			}
+			var html = Mustache.to_html(template, inputRow);
+			$target.append(html);
+			
+			
+			if(count > 1){
+		  		for(var i =1; i<count;i++){
+		  			$("#invisible-part"+i).addClass("hide");
+		  		}	  			
+		  	}
+			
+			allCounts.push(count);
+		
+			count++;
+		  }else{
+			$msg.text('too many fields!');
+		  }
+		  
+		}
+		
+
+		addRows();  
+		
+		
+	
+            
+            
+			
+		});
+     
+     
+     
+     </script>
+     
+
+    
+   
+</head>
+<body>
+
+ <script type="text/template" id="treatment-template">
+	
+		<div class="treatment-wrapper">
+				
+				<div class="row visible-part" id="visible-part{{count}}">
+					<p class="treatmentid inline-block"> TREATMENT {{count}} 
+					</p>
+					
+					<div id="show{{count}}" class="angledown inline-block">
+									<span class="fa-stack fa-2x">
+										<i class="fa fa-circle fa-stack-2x icon-background2"></i>
+										<i class="fa fa-angle-down fa-stack-1x"></i>
+									</span>
+					</div>
+					
+				</div>
+		
+				<div class="invisible-part" id="invisible-part{{count}}">
+					<div class="row">
+						<div class="col-lg-6">
+							<label for="start-treatment{{count}}">Start Date</label>
+							<input type="text" id="start-treatment{{count}}" name="start-treatment{{count}}" required value="yyyy-mm-dd">
+						</div>
+						<div class="col-lg-6">
+							<label for="end-treatment{{count}}">End Date</label>
+							<input type="text" id="end-treatment{{count}}" name="end-treatment{{count}}" required value="yyyy-mm-dd">
+						</div>
+					
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<label for="symptom{{count}}">Symptoms</label>
+							<div id="symptom{{count}}-results">
+								<!-- each is may col-3? or set a width-->
+							</div>
+							<div class="field2">
+								<input type="text" id="symptom{{count}}" name="symptom{{count}}" required>
+								<div class="button">ADD</div>
+							</div>
+						</div>
+					</div>
+				
+				
+					<div class="row">
+						<div class="col-lg-12">
+							<label for="treatment{{count}}">Treatments or Changes</label>
+							<div id="treatment{{count}}-results">
+							
+							</div>
+							<div class="field2">
+								<input type="text" id="treatment{{count}}" name="treatment{{count}}" required>
+								<div class="button">ADD</div>
+							</div>
+						</div>
+					</div>
+				
+				
+					<div class="row">
+						<label for="treatment{{count}}">Results</label>
+						<div id="treatment{{count}}-results">
+							<!-- populate from symptom{{count}}-results, <ul><li>? -->
+						</div>
+					</div>
+				
+					<div class="row">
+						<label for="condition{{count}}" >Overall Condition</label>
+					</div>
+				</div> <!-- end invisible part -->
+			</div><!-- end treatment-wrapper -->
+	
+</script>
+	
+	
+<div id="container">
+<div id="body">
+
+	<div class="row">
+		<div class="col-lg-3" id="sidebar">
+ 			<h2 id="title"> LymesTracker </h2>
+			 <hr class="title">
+		
+			<div id="summary">
+			 	<p class="text-left">
+			 		Disrupt lomo hella snackwave, before they sold out church-key austin forage tofu prism hot chicken. Meditation viral polaroid 
+			 		master cleanse, plaid woke portland taxidermy. Actually venmo dreamcatcher ennui kale chips authentic.sexual. 
+			 		Disrupt lomo hella snackwave, before they sold out church-key austin forage tofu prism hot chicken. Meditation viral polaroid 
+			 		master cleanse, plaid woke portland taxidermy. 
+			 	</p>
+			</div>
+			
+			<div id="nav">
+			
+			<ul>
+				<li>
+					<div class="hi-icon-effect-1 hi-icon-effect-1a inline-block">
+						<i class="hi-icon fa fa-wpforms">
+							<a href="#"></a>
+						</i>
+						<p class="a inline-block"> SUBMIT </p>
+					</div>
+				</li>
+				<li>
+					<div class="hi-icon-effect-1 hi-icon-effect-1a inline-block">
+						<i class="hi-icon fa fa-search">
+							<a href="#"></a>
+						</i>
+						<p class="a inline-block"> SEARCH </p>
+					</div>
+				</li>
+				<li>
+					<div class="hi-icon-effect-1 hi-icon-effect-1a inline-block">
+						<i class="hi-icon fa fa-tasks">
+							<a href="#"></a>
+						</i>
+						<p class="a inline-block"> SUMMARY </p>
+					</div>
+				</li>
+				<li>
+					<div class="hi-icon-effect-1 hi-icon-effect-1a inline-block">
+						<i class="hi-icon fa fa-map">
+							<a href="#"></a>
+						</i>
+						<p class="a inline-block"> MAP </p>
+					</div>
+				</li>
+			</ul>
+			</div>
+
+
+		</div>    
+		<div class="col-lg-9">    
+			
+			
+			 <form id="ajax-contact" method="post" action="">
+         		<div id="basic-info">
+         			<h3 class="section-title">
+         				Basic Information
+         			</h3>
+					<div class="field inline-block">
+						<label for="firstname" class="main">First Name</label>
+						<input type="text" id="firstname" name="firstname" class="flex-item" required>
+					</div>
+					<div class="field inline-block">
+						<label for="lastname" class="main">Last Name</label>
+						<input type="text" id="lastname" name="lastname" class="flex-item" required>
+					</div>
+					<div class="field">
+						<label for="age" class="main">Age</label>
+						<input type="text" id="age" name="age" class="flex-item" required>
+					</div>
+					<div class="field">
+						<label for="sex" class="main">Sex</label>
+						<input type="text" id="sex" name="sex" class="flex-item" required>
+					</div>
+					<div class="field">
+						<label for="date-contracted" class="main">Date Contracted</label>
+						<input type="text" id="date-contracted" name="date-contracted" class="flex-item" required>
+					</div>
+					<div class="field">
+						<label class="flex-2">Location Contracted</label>
+						<label for="state" class="main sub text-center">State</label>
+						<input type="text" id="state" name="state" class="flex-3" required>
+						<label for="city" class="main sub text-center">City</label>
+						<input type="text" id="city" name="city" class="flex-3" required>
+					</div>
+					<div class="field">
+						<label class="flex-2 sub">Coordinates</label>
+						<label for="state" class="main sub text-center">Lat</label>
+						<input type="text" id="state" name="state" class="flex-3" required>
+						<label for="city" class="main sub text-center">Lon</label>
+						<input type="text" id="city" name="city" class="flex-3" required>
+					</div>
+				</div>
+				<div id="change-info">
+					<h3 class="section-title">
+         				Treatments and Lifestyle Changes
+         			</h3>
+         			
+         			
+         			<div class="all-treatments" id="all-treatments">
+         			<!-- //below here move to mustache -->
+						
+					</div>
+					
+					
+					
+					<div id="add-treatment" class="inline-block">
+									<span class="fa-stack fa-2x">
+										<i class="fa fa-circle fa-stack-2x icon-background2"></i>
+										<i class="fa fa-plus fa-stack-1x"></i>
+									</span>
+									<p class="inline-block"> ADD ANOTHER TREATMENT <p>
+					</div>
+					
+					
+				</div>
+				
+			  </form>
+
+   
+		</div>
+	
+	
+	</div>
+
+
+</div> <!-- end body -->
+   
+
+<div id="footer"></div>
+</div>	<!-- end container -->
+
+
+</body>
+
+</html>

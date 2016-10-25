@@ -43,8 +43,7 @@
     
     
      <script type="text/javascript">
-     	//treatment add onclick, #results append a treatment / change
-  		// should there be a limit on results?
+
   		 $("document").ready(function() {
 			var template = $("#treatment-template").html(),
 				$target = $("#all-treatments"), // in html, where dynamic templates should be inserted
@@ -53,17 +52,7 @@
 				count = 1,
 				inputRow = [],
 				allCounts = [];
-				
-			
-            
-            
-           // $btnAdd.click(function(e){
-// 				  e.preventDefault();
-// 				  addRows();
-// 				  $(".angledown").on('click',function(){
-// 				   $(this).closest('.visible-part').next().toggleClass("hide");
-// 			 });
-// 		 	});
+       
 		 	
 		 $('body').on('click','#add-treatment',function(e){
 				  e.preventDefault();
@@ -83,7 +72,6 @@
 			var html = Mustache.to_html(template, inputRow);
 			$target.append(html);
 			
-			
 			if(count > 1){
 		  		for(var i =1; i<count;i++){
 		  			$("#invisible-part"+i).addClass("hide");
@@ -101,13 +89,40 @@
 		
 
 		addRows();  
-		
-		
-	
-            
-            
+   
 			
+		// symptom add on click, create a div with the class symptom-button, 
+		// get the value of the input box and set it as the value of the new div, 
+		// append that div to the symptom{{count}}-results div
+		
+		 $('body').on('click','.add-symptom',function(e){
+				  e.preventDefault();
+				  var symptom = $(this).parent().find('input').val();
+				  console.log(symptom);
+				  var div = $(this).parent().parent().find('.symptom-results');
+				  $(div).append("<div class='symptom-button'>"+symptom+"</div>");
+				  $(this).parent().find('input').val('');
+				  // also add it to results to create a list to let the user assess after
+		 });
+		 
+		 $('body').on('click','.add-treatment',function(e){
+				  e.preventDefault();
+				  var treatment = $(this).parent().find('input').val();
+				  console.log(treatment);
+				  var div = $(this).parent().parent().find('.treatment-results');
+				  $(div).append("<div class='symptom-button'>"+treatment+"</div>");
+				  $(this).parent().find('input').val('');
+		 });
+		 
+		 //get list of symptoms
+
 		});
+		
+		
+		
+		
+		
+		
      
      
      
@@ -150,13 +165,13 @@
 					</div>
 					<div class="row">
 						<div class="col-lg-12">
-							<label for="symptom{{count}}">Symptoms</label>
-							<div id="symptom{{count}}-results">
+							<label for="symptom{{count}}">Symptoms (before treatment)</label>
+							<div id="symptom{{count}}-results" class="symptom-results">
 								<!-- each is may col-3? or set a width-->
 							</div>
 							<div class="field2">
-								<input type="text" id="symptom{{count}}" name="symptom{{count}}" required>
-								<div class="button">ADD</div>
+								<input type="text" class="symptom" id="symptom{{count}}" name="symptom{{count}}" required>
+								<div class="button add-symptom" id="add-symptom-{{count}}">ADD</div>
 							</div>
 						</div>
 					</div>
@@ -164,27 +179,51 @@
 				
 					<div class="row">
 						<div class="col-lg-12">
-							<label for="treatment{{count}}">Treatments or Changes</label>
-							<div id="treatment{{count}}-results">
+							<label for="treatment{{count}}">Treatments or dietary / lifestyle changes</label>
+							<div id="treatment{{count}}-results" class="treatment-results">
 							
 							</div>
 							<div class="field2">
 								<input type="text" id="treatment{{count}}" name="treatment{{count}}" required>
-								<div class="button">ADD</div>
+								<div class="button add-treatment" id="add-treatment-{{count}}">ADD</div>
 							</div>
 						</div>
 					</div>
 				
 				
 					<div class="row">
-						<label for="treatment{{count}}">Results</label>
-						<div id="treatment{{count}}-results">
-							<!-- populate from symptom{{count}}-results, <ul><li>? -->
+				    	<div class="col-lg-12">
+							<label for="final{{count}}">Results</label>
+							<div id="final{{count}}-results" class="final-results">
+								<!-- populate from symptom{{count}}-results, <ul><li>? -->
+							
+							</div>
 						</div>
 					</div>
 				
 					<div class="row">
-						<label for="condition{{count}}" >Overall Condition</label>
+						<div class="col-lg-12">
+							<label for="condition{{count}}" >Overall Condition</label>
+								<div class="radio">
+									<ul> 
+										 <li>
+										    <input type="radio" id="f-option" name="selector">
+											<label for="f-option">Better</label>
+											<div class="check"></div>
+										 </li>
+										 <li>
+											<input type="radio" id="f-option" name="selector">
+											<label for="f-option">Same</label>
+											<div class="check"></div>
+										 </li>
+										 <li>
+											<input type="radio" id="f-option" name="selector">
+											<label for="f-option">Worse</label>
+											<div class="check"></div>
+										 </li>
+									</ul>
+								</div>
+						</div>
 					</div>
 				</div> <!-- end invisible part -->
 			</div><!-- end treatment-wrapper -->

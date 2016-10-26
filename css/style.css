@@ -558,8 +558,8 @@
 		line-height: 1.5;
 		text-transform: uppercase;
 		background-color: none;
-		color: #77AD91;
-		border: solid 2px #77AD91;
+		color: #57BD91;
+		border: solid 2px #57BD91;
 		border-radius: 14px;
 		-webkit-transition: all 500ms ease;
 		-moz-transition: all 500ms ease;
@@ -579,43 +579,48 @@
 
 
 	.radio ul li{
-	  flex:3;
+	  flex:2;
 	}
 
 	.radio ul li label{
 	  display:inline;
 	  font-weight: 300;
 	  font-size: 1.35em;
-	  padding: 25px 25px 25px 80px;
 	  margin: 10px auto;
 	  z-index: 9;
 	  cursor: pointer;
 	  -webkit-transition: all 0.25s linear;
 	}
-
 	
-	/* 
-input[type=radio] {
-	  display: none;
-	}
-	.radio label:before {
-	  content: "";
+	/* submit button */
+	
+	.button-submit {
 	  display: inline-block;
-	  width: 16px;
-	  height: 16px;
-	  margin-right: 10px;
-	  background-color: #aaa;
-	  box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+	  border-radius: 3px;
+	  border: none;
+	  font-size: 20px;
+	  padding: 0.5rem 0.8em;
+	  background: #57BD91;
+	  border-bottom: 1px solid #498b50;
+	  color: white;
+	  font-weight: bold;
+	  margin-left:auto;
+	  margin-right:auto;
+	  text-align: center;
 	}
-	.radio label:before {
-	  border-radius: 8px;
+
+	.button-submit:hover, .button-submit:focus {
+	  opacity: 0.75;
+	  cursor: pointer;
 	}
-	input[type=radio]:checked + label:before {
-		content: "\2022";
-		color: #f3f3f3;
-		font-size: 30px;
-		text-align: center;
-		line-height: 18px;
+
+	.button-submit:active {
+	  opacity: 1;
+	  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+	}
+	/* 
+.button-wrapper{
+		text-align:center;
 	}
  */
 

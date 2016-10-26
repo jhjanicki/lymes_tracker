@@ -100,9 +100,12 @@
 				  var symptom = $(this).parent().find('input').val();
 				  console.log(symptom);
 				  var div = $(this).parent().parent().find('.symptom-results');
+				  console.log(div);
 				  $(div).append("<div class='symptom-button'>"+symptom+"</div>");
 				  $(this).parent().find('input').val('');
 				  // also add it to results to create a list to let the user assess after
+				  
+				  populateResults(symptom, $(this));
 		 });
 		 
 		 $('body').on('click','.add-treatment',function(e){
@@ -114,7 +117,35 @@
 				  $(this).parent().find('input').val('');
 		 });
 		 
-		 //get list of symptoms
+		 //get list of symptoms from above, populate them in the results area as label-input rows
+		 	
+		 var index = 0;
+		 
+		 function populateResults(symptom, thisObj){	
+		    console.log("symptom");
+		    console.log(symptom);
+		    console.log("thisObj");
+		    console.log(thisObj);
+		 	var div = thisObj.parent().parent().parent().parent().find('.final-results');
+		 	console.log("div");
+		 	console.log(div);
+		 	// $(div).append("<div><label for='"+index+"-"+symptom+"result'>"+symptom+"</label>"+"<input type='text' id='"+index+"-"+symptom+"result' name=''></div>");
+		 	$(div).append("<div class='symptom-button' id='"+symptom+"-"+index+"-result'>"+symptom+"</div>");
+		 	var radio="<div class='radio' id='"+symptom+"-"+index+"-radio-ul'><ul>"+
+		 				"<li><input type='radio' name='"+symptom+"-"+index+"selector'>"+
+		 				  "<label for='"+symptom+"-"+index+"-radio-ul'>Better</label>"+
+		 				  "<div class='check'></div></li>"+
+		 				  "<li><input type='radio' name='"+symptom+"-"+index+"selector'>"+
+		 				  "<label for='"+symptom+"-"+index+"-radio-ul'>Same</label>"+
+						  "<div class='check'></div></li>"+
+						  "<li><input type='radio' name='"+symptom+"-"+index+"selector'>"+
+						  "<label for='"+symptom+"-"+index+"-radio-ul'>Worse</label>"+
+						  "<div class='check'></div></li></ul></div>";
+						  
+			$(div).append(radio);
+		 	index++;
+		 	
+		 }			 
 
 		});
 		
@@ -354,9 +385,12 @@
 					
 					
 				</div>
-				
+				<div class="button-wrapper">
+					<div class="button-submit"> SUBMIT </div>
+				</div>
 			  </form>
-
+				
+			  
    
 		</div>
 	

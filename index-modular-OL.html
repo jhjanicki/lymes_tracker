@@ -43,182 +43,129 @@
     
     
      <script type="text/javascript">
+     //RULES FOR MODULARIZATION
+     // - self-contained module
+     // -- everything to do with my module is in my module
+     // -- no global variables
+     // -- if a module manages more than one thing it should be split up
+     // - separation of concerns
+     // - DRY code
+     // - efficient DOM usage --> DOM caching
+     // -- very few $(selections)
+     // - no memory leaks
+     // -- all events can be unbound
+     
+     
+     
+     //each treatment pd, treatment/ lifestyle change, symptom is its own module
+     //tasks: search for element, bind event, update HTML
 
-  		 $("document").ready(function() {
-  		 
-  		 	
-  		 	var title = {
-				title: "SUBMIT"
-			};
-			var template = "<h2>{{title}}</h2>";
-			var html = Mustache.to_html(template, title);
-			$('#page-title').html(html);
-
-  		 
-  		 
-  		 
-  		 
-			 	
-			
-			var template = $("#treatment-template").html(),
-				$target = $("#all-treatments"), // in html, where dynamic templates should be inserted
-				$btnAdd = $("#add-treatment"),
-				max = 10,
-				count = 1,
-				inputRow = [];
-       
-		 	
-			 $('body').on('click','#add-treatment',function(e){
-					  e.preventDefault();
-					  addRows();
-			 });
-			 $('body').on('click','.angledown',function(){
-				   $(this).closest('.visible-part').next().toggleClass("hide",1000);
-			 });
-		 
-			
-
-			function addRows(){
-			  if(count <= max){
-				inputRow = {
-				  count : count
-				}
-				var html = Mustache.to_html(template, inputRow);
-				$target.append(html);
-			
-				if(count > 1){
-					for(var i =1; i<count;i++){
-						$("#invisible-part"+i).addClass("hide");
-					}	  			
-				}
 		
-				count++;
-			  }else{
-				$msg.text('too many fields!');
-			  }
-		  
-			}
-		
-
-			addRows();  
-   
+	$("document").ready(function() {
+	 
+	(function(){
+		var treatment_pd = {
+			template: $("#treatment-template").html(),
+			max: 10,
+			count: 1,
+			inputRow:[],
+			index:0,
+			init: function(){
+				this.cacheDom();
+				this.bindEvents();
+				this.render();
+			},
+			cacheDom: function(){
+				this.$body = $("body");
+				this.$target = this.$body.find("#all-treatments");
+			},
+			bindEvents: function(){
+				this.$body.on('click','#add-treatment',this.addRows.bind(this));
+				this.$body.on('click','.angledown', this.toggleRows.bind(this));
+				this.$body.on('click','.add-symptom', this.addSymptom.bind(this));
+				this.$body.on('click','.add-treatment', this.addTreatment.bind(this));
+			},
+			addRows: function(){
+				this.render();
+			},
+			toggleRows: function(){
+			   	$(this).closest('.visible-part').next().toggleClass("hide");				
+			},
+			addSymptom: function(){
+				
+				  var symptom = $(this).parent().find('input').val();	
+				  var div = $(this).parent().parent().find('.symptom-results');				  
+				  $(div).append("<div class='symptom-button'>"+symptom+"</div>");
+				  $(this).parent().find('input').val('');
+				  populateResults(symptom, $(this));
 			
-			// symptom add on click, create a div with the class symptom-button, 
-			// get the value of the input box and set it as the value of the new div, 
-			// append that div to the symptom{{count}}-results div
-		
-			 $('body').on('click','.add-symptom',function(e){
-					  e.preventDefault();
-					  var symptom = $(this).parent().find('input').val();	
-					  var div = $(this).parent().parent().find('.symptom-results');				  
-					  $(div).append("<div class='symptom-button'>"+symptom+"</div>");
-					  $(this).parent().find('input').val('');
-					  // also add it to results to create a list to let the user assess after
-				  
-					  populateResults(symptom, $(this));
-			 });
-		 
-			 $('body').on('click','.add-treatment',function(e){
-					  e.preventDefault();
-					  var treatment = $(this).parent().find('input').val();
-					  console.log(treatment);
-					  var div = $(this).parent().parent().find('.treatment-results');
-					  $(div).append("<div class='symptom-button'>"+treatment+"</div>");
-					  $(this).parent().find('input').val('');
-			 });
-		 
-			 //get list of symptoms from above, populate them in the results area as label-input rows
-			
-			 var index = 0;
-		 
-			 function populateResults(symptom, thisObj){	
-		  
+			},
+			populateResults: function(symptom, thisObj){
 				var div = thisObj.parent().parent().parent().parent().find('.final-results');
-				$(div).append("<div class='symptom-button symptom-results' id='"+symptom+"-"+(index+1)+"-result'>"+symptom+"</div>");
-				var radio="<div class='radio' id='"+symptom+"-"+(index+1)+"-radio-ul'><ul>"+
-							"<li><input type='radio' name='"+symptom+"-"+(index+1)+"selector'>"+
-							  "<label for='"+symptom+"-"+(index+1)+"-radio-ul'>Better</label>"+
+				$(div).append("<div class='symptom-button' id='"+symptom+"-"+this.index+"-result'>"+symptom+"</div>");
+				var radio="<div class='radio'><ul>"+
+							"<li><input type='radio' id='"+symptom+"-"+this.index+"-radio-ul' name='"+symptom+"-"+this.index+"selector'>"+
+							  "<label for='"+symptom+"-"+this.index+"-radio-ul'>Better</label>"+
 							  "<div class='check'></div></li>"+
-							  "<li><input type='radio' name='"+symptom+"-"+(index+1)+"selector'>"+
-							  "<label for='"+symptom+"-"+(index+1)+"-radio-ul'>Same</label>"+
+							  "<li><input type='radio' name='"+symptom+"-"+this.index+"selector'>"+
+							  "<label for='"+symptom+"-"+this.index+"-radio-ul'>Same</label>"+
 							  "<div class='check'></div></li>"+
-							  "<li><input type='radio' name='"+symptom+"-"+(index+1)+"selector'>"+
-							  "<label for='"+symptom+"-"+(index+1)+"-radio-ul'>Worse</label>"+
+							  "<li><input type='radio' name='"+symptom+"-"+this.index+"selector'>"+
+							  "<label for='"+symptom+"-"+this.index+"-radio-ul'>Worse</label>"+
 							  "<div class='check'></div></li></ul></div>";
 						  
 				$(div).append(radio);
-				index++;
+				this.index++;
+			},
+			addTreatment: function(){
+				
+				  var treatment = $(this).parent().find('input').val();
+				  console.log(treatment);
+				  var div = $(this).parent().parent().find('.treatment-results');
+				  $(div).append("<div class='symptom-button'>"+treatment+"</div>");
+				  $(this).parent().find('input').val('');
+				
+			},
+			render: function(){
+				if(this.count <= this.max){
+					this.inputRow = {
+					  count : this.count
+					}
+					var html = Mustache.to_html(this.template, this.inputRow);
+					this.$target.append(html);
 			
-			 }		
-			 
-			 var data = {};
-			 
+					if(this.count > 1){
+						for(var i =1; i<this.count;i++){
+						$("#invisible-part"+i).addClass("hide");
+						}	  			
+		  			}
+				this.count++;
+		  	
+				}// end if
+			}
 			
-			 
-			 
-			 $('body').on('click','#submit',function(e){
-			
-					 var basic_info = {
-						"first_name":'',
-						"last_name":'',
-						"age":'',
-						"sex":'',
-						"date_contracted":'',
-						"place_contracted":'',
-						"state_contracted":'',
-						"latitude":'',
-						"longitude":''		 
-					 }
-			 
-					 //for each treatment period, get every input stored
-					 var treatment_pd_info = {
-						"start_date":'',
-						"end_date":'',
-						"symptoms":[],
-						"treatments":[],
-						"results":{},
-						"overall_condition":''
-					 };
+		};
+				
+		treatment_pd.init();
+		
+	})();
 
-				 
-					 $('div[class="treatment-wrapper"]').each(function(i){
-					 
-					 	var start_date = $("#start-treatment"+(i+1)).val();
-					 	var end_date = $("#end-treatment"+(i+1)).val();
-						
-						console.log('start_date');
-					 	console.log(start_date);
-						
-						// var finalResultsDiv = $(this).find('final-results');
-// 						var symptomResults = finalResultsDiv.first('.symptom-results').val();
-// 						console.log('symptomResults');
-// 						console.log(symptomResults);
-						
-						var symotom1 = $('#symptom1-results').find(".symptom-button").html();
-						
-						console.log('symotom1');
-						console.log(symotom1);
-						
-						
-					 	var symptoms = $('#symptom'+(i+1)+'-results').find(".symptom-button").html();
-					 	
-					 	console.log('symptoms');
-					 	console.log(symptoms);
-					 	
-					 	
-					 		$('#symptom'+(i+1)+'-results').find('.symptom-results').each(function(index){
-						 			console.log('index');
-						 			console.log(index);
-						 			
-							 });
-					 	
-					 });
-					 
-			 });
- 	 
+	
 
-		});
 
+	});
+	
+	
+	
+  		
+		
+		
+		
+		
+		
+     
+     
+     
      </script>
      
 
@@ -226,7 +173,6 @@
    
 </head>
 <body>
-
 
  <script type="text/template" id="treatment-template">
 	
@@ -249,11 +195,11 @@
 					<div class="row">
 						<div class="col-lg-6">
 							<label for="start-treatment{{count}}">Start Date</label>
-							<input type="text" id="start-treatment{{count}}" name="start-treatment{{count}}" required placeholder="yyyy-mm-dd">
+							<input type="text" id="start-treatment{{count}}" name="start-treatment{{count}}" required value="yyyy-mm-dd">
 						</div>
 						<div class="col-lg-6">
 							<label for="end-treatment{{count}}">End Date</label>
-							<input type="text" id="end-treatment{{count}}" name="end-treatment{{count}}" required placeholder="yyyy-mm-dd">
+							<input type="text" id="end-treatment{{count}}" name="end-treatment{{count}}" required value="yyyy-mm-dd">
 						</div>
 					
 					</div>
@@ -327,7 +273,7 @@
 	
 <div id="container">
 <div id="body">
-   
+
 	<div class="row">
 		<div class="col-lg-3" id="sidebar">
  			<h2 id="title"> LymesTracker </h2>
@@ -386,7 +332,6 @@
 			
 			
 			 <form id="ajax-contact" method="post" action="">
-			 <div id="page-title"></div>
          		<div id="basic-info">
          			<h3 class="section-title">
          				Basic Information
@@ -450,7 +395,7 @@
 					
 				</div>
 				<div class="button-wrapper">
-					<div class="button-submit" id="submit"> SUBMIT </div>
+					<div class="button-submit"> SUBMIT </div>
 				</div>
 			  </form>
 				
